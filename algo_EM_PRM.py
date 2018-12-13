@@ -473,6 +473,8 @@ def etape_EM_PRM_BGS(liste_obs, modprm):
     npi = api/(api+bpi)
     ng = ag/(ag+bg)
     
+    if ac + bc == 0:
+        ac += 0.001
     nc = ac/(ac+bc)
     nc2 = ac2/(ac2+bc2)
     
@@ -493,7 +495,7 @@ def etape_EM_PRM_BGS(liste_obs, modprm):
     try :
         newmod = gs.ModPRM(nc, np, ng, nd, npi)
     except :
-        return(100000)
+        return(modprm, 0, 10000)
     return (newmod, exp(vrais), 8 - 2*vrais2)
 
 #def etape_EM_PRM_SB(liste_obs):
@@ -549,8 +551,14 @@ def etape_EM_PRM_SB(liste_obs):
             nbr_t_01 += (1-obs[i-1])*obs[i]
             nbr_t_10 += obs[i-1]*(1-obs[i])
     pi = nbr_1*1.0/nbr_obs
-    c = nbr_t_01*1.0/nbr_t_0
-    A = nbr_t_10*1.0/nbr_t_1
+    try :
+        c = nbr_t_01*1.0/nbr_t_0
+    except :
+        c = 0.99
+    try :
+        A = nbr_t_10*1.0/nbr_t_1
+    except :
+        A = 0.99
     if c == 1 :
         c = 0.99
     if A > 1 - c:
